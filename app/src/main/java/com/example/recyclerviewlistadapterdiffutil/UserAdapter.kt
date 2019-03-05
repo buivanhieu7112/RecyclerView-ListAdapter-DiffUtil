@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.adapter_user.view.*
 
-class UserAdapter : ListAdapter<User, UserAdapter.UserViewHolder>(UserAdapter.UserDiffCallback()) {
+class UserAdapter(private val itemCLickListener: ItemCLickListener) :
+    ListAdapter<User, UserAdapter.UserViewHolder>(UserAdapter.UserDiffCallback()) {
 
     class UserDiffCallback : DiffUtil.ItemCallback<User>() {
         override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
@@ -26,13 +27,16 @@ class UserAdapter : ListAdapter<User, UserAdapter.UserViewHolder>(UserAdapter.Us
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.binData(getItem(position))
+        holder.binData(getItem(position), itemCLickListener)
     }
 
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun binData(user: User){
+        fun binData(user: User, itemCLickListener: ItemCLickListener) {
             itemView.textViewUserName.text = user.name
             itemView.textViewUserEmail.text = user.email
+            itemView.setOnClickListener {
+                itemCLickListener.onItemCLick(user, adapterPosition)
+            }
         }
     }
 }
